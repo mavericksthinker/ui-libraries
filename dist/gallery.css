@@ -1,0 +1,1226 @@
+/* ===================================
+   DEFAULT GALLERY - MINIMAL CSS
+   Version: 1.0.0
+
+   Features included:
+   - Thumbnails on left (vertical layout)
+   - Main image display
+   - Navigation arrows
+   - Image counter
+   - Manual zoom controls
+   - Animated pills pagination
+   - Autoplay controls
+   - Swipe gestures
+   - Lightbox/modal
+   - Image captions
+   - Responsive design
+   =================================== */
+
+/* ===================================
+   RESET & BASE
+   =================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --gallery-bg-color: transparent;
+  --gallery-container-bg: transparent;
+  --gallery-main-bg: transparent;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: var(--gallery-bg-color);
+  padding: clamp(20px, 3vw + 10px, 40px) clamp(10px, 2vw + 5px, 20px);
+  min-height: 100vh;
+}
+
+/* ===================================
+   GALLERY CONTAINER
+   =================================== */
+.gallery-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--gallery-container-bg);
+  width: 100%;
+}
+
+/* ===================================
+   GALLERY LAYOUT
+   =================================== */
+.gallery-wrapper {
+  display: flex;
+  gap: clamp(8px, 1.5vw + 6px, 20px);
+  padding: clamp(8px, 1.5vw + 6px, 20px);
+  contain: layout;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Thumbnails on left */
+.gallery-wrapper[data-thumbnail-position="left"] {
+  flex-direction: row;
+}
+
+.gallery-wrapper[data-thumbnail-position="right"] {
+  flex-direction: row-reverse;
+}
+
+.gallery-wrapper[data-thumbnail-position="top"] {
+  flex-direction: column;
+}
+
+.gallery-wrapper[data-thumbnail-position="bottom"] {
+  flex-direction: column-reverse;
+}
+
+/* Main content area (contains both image and pagination) */
+.gallery-main-content {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Bottom position (default - below image) */
+.gallery-wrapper[data-pagination-position="bottom"] .gallery-main-content {
+  flex-direction: column;
+}
+
+.gallery-wrapper[data-pagination-position="bottom"] .gallery-pagination-container {
+  order: 2;
+}
+
+/* ===================================
+   UTILITY CLASSES
+   =================================== */
+.gallery-visible {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.gallery-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.gallery-main-image {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================
+   THUMBNAILS STRIP
+   =================================== */
+.gallery-thumbnails {
+  display: flex;
+  gap: clamp(8px, 1vw + 6px, 12px);
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+  scroll-behavior: smooth;
+  padding: 4px;
+  contain: layout style;
+}
+
+/* Vertical thumbnails (left/right) */
+.gallery-wrapper[data-thumbnail-position="left"] .gallery-thumbnails,
+.gallery-wrapper[data-thumbnail-position="right"] .gallery-thumbnails {
+  flex-direction: column;
+  width: 100px;
+  flex-shrink: 0;
+}
+
+/* Horizontal thumbnails (top/bottom) */
+.gallery-wrapper[data-thumbnail-position="top"] .gallery-thumbnails,
+.gallery-wrapper[data-thumbnail-position="bottom"] .gallery-thumbnails {
+  flex-direction: row;
+  width: 100%;
+  padding: 10px 4px;
+}
+
+.gallery-thumbnails::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.gallery-thumbnails::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.gallery-thumbnails::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.gallery-thumbnails::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ===================================
+   THUMBNAIL ITEM
+   =================================== */
+.gallery-thumbnail {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 3px solid transparent;
+  flex-shrink: 0;
+  transform: scale(0.95) translateZ(0);
+  contain: layout style paint;
+  will-change: transform, border-color;
+}
+
+.gallery-wrapper[data-thumbnail-position="left"] .gallery-thumbnail,
+.gallery-wrapper[data-thumbnail-position="right"] .gallery-thumbnail {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.gallery-wrapper[data-thumbnail-position="top"] .gallery-thumbnail,
+.gallery-wrapper[data-thumbnail-position="bottom"] .gallery-thumbnail {
+  width: 100px;
+  aspect-ratio: 1;
+}
+
+.gallery-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-thumbnail:hover {
+  transform: scale(1);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-thumbnail.active {
+  transform: scale(1);
+  border-color: #000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-thumbnail:focus {
+  outline: 3px solid #0071e3;
+  outline-offset: 2px;
+}
+
+/* ===================================
+   MAIN DISPLAY
+   =================================== */
+.gallery-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gallery-main-bg);
+  border-radius: 0;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  contain: layout paint;
+  container-type: inline-size;
+  container-name: gallery-main;
+}
+
+/* Size controls the CONTAINER */
+.gallery-main[data-image-size="medium"] {
+  max-width: min(500px, 90vw);
+  max-height: min(500px, 70vh);
+  width: 500px;
+  height: 500px;
+}
+
+/* Cursor changes based on zoom mode */
+.gallery-main.zoomed {
+  cursor: grab;
+}
+
+.gallery-main.zoomed:active {
+  cursor: grabbing;
+}
+
+.gallery-main:hover .expand-hint {
+  opacity: 1;
+}
+
+/* Image ALWAYS fills its container */
+.gallery-main-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateZ(0);
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transform-origin: center center;
+  border-radius: 12px;
+  opacity: 0;
+  pointer-events: none;
+  aspect-ratio: auto;
+  contain: layout style;
+  will-change: opacity, transform;
+  transition:
+    opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Only show the active image */
+.gallery-main-image.active {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  display: block !important;
+}
+
+.gallery-main-image.gallery-visible {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  display: block !important;
+}
+
+/* When zoom is enabled, add smooth transform transition */
+.gallery-main[data-enable-zoom="true"][data-zoom-mode="manual"] .gallery-main-image {
+  transition:
+    opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 0.12s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.gallery-main.loading .gallery-main-image {
+  opacity: 0.5;
+}
+
+/* ===================================
+   ZOOM CONTROLS (MANUAL MODE)
+   =================================== */
+.zoom-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-main[data-zoom-mode="manual"]:hover .zoom-controls {
+  opacity: 1;
+}
+
+.zoom-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.zoom-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
+}
+
+.zoom-btn:active {
+  transform: scale(0.95);
+}
+
+.zoom-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Zoom level indicator */
+.zoom-level {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.gallery-main.zoomed .zoom-level {
+  opacity: 1;
+}
+
+/* ===================================
+   NAVIGATION ARROWS
+   =================================== */
+.gallery-nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition:
+    background 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+    color 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 0.4s cubic-bezier(0.34, 1.25, 0.64, 1),
+    box-shadow 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #000;
+  will-change: transform, background;
+}
+
+.gallery-main[data-show-arrows="false"] .gallery-nav-button {
+  display: none;
+}
+
+.gallery-nav-button:hover {
+  background: #000;
+  color: white;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.gallery-nav-button:active {
+  transform: translateY(-50%) scale(0.98);
+}
+
+.gallery-nav-button:focus {
+  outline: 3px solid #0071e3;
+  outline-offset: 2px;
+}
+
+.gallery-nav-button.prev {
+  left: 20px;
+}
+
+.gallery-nav-button.next {
+  right: 20px;
+}
+
+.gallery-nav-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ===================================
+   IMAGE COUNTER
+   =================================== */
+.gallery-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.gallery-main[data-show-counter="false"] .gallery-counter,
+.lightbox-content[data-show-counter="false"] .gallery-counter {
+  display: none;
+}
+
+/* ===================================
+   PAGINATION - ANIMATED PILLS
+   =================================== */
+.gallery-pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  position: relative;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.gallery-pagination {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  position: relative;
+  z-index: 15;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50px;
+  padding: 8px 12px 8px 16px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  min-height: 36px;
+}
+
+/* Wrapper for pagination items ONLY (dots/pills inside unified container) */
+.pagination-items-wrapper {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  min-height: auto;
+  order: 1;
+}
+
+/* Override gap for animated pills */
+.gallery-pagination[data-style="animated-pills"] > .pagination-items-wrapper {
+  gap: 10px;
+  padding: 0;
+  transform: translateZ(0);
+  will-change: auto;
+  position: relative;
+}
+
+.pagination-item {
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+  will-change: transform, opacity, background;
+  flex-shrink: 0;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+
+/* Non-active items are bullets (dots) */
+.gallery-pagination[data-style="animated-pills"] .pagination-item {
+  position: relative;
+  width: 8px;
+  min-width: 8px;
+  height: 8px;
+  min-height: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  z-index: 1;
+  flex-shrink: 0;
+  transition:
+    width 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    min-width 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    min-height 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+    border-radius 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: width, height, border-radius;
+  cursor: pointer;
+}
+
+.gallery-pagination[data-style="animated-pills"] .pagination-item:hover {
+  background: rgba(0, 0, 0, 0.4);
+  transform: scale(1.2) translateZ(0);
+  z-index: 3;
+}
+
+/* Active item becomes a pill with spring animation */
+.gallery-pagination[data-style="animated-pills"] .pagination-item.active {
+  width: 32px;
+  min-width: 32px;
+  height: 8px;
+  min-height: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 2;
+  padding: 0;
+  margin: 0;
+  transition:
+    width 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    min-width 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    min-height 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+    border-radius 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-pagination[data-style="animated-pills"] .pagination-item.active:hover {
+  background: rgba(0, 0, 0, 0.25);
+  transform: scaleY(1.15) translateZ(0);
+  z-index: 4;
+}
+
+/* Fill indicator for active item */
+.gallery-pagination[data-style="animated-pills"] .pagination-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 4px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  transition: width 0.1s linear;
+  opacity: 0;
+}
+
+.gallery-pagination[data-style="animated-pills"] .pagination-item.active::before {
+  width: 100%;
+  opacity: 1;
+}
+
+/* When autoplay is active, show animated progress */
+.gallery-pagination[data-style="animated-pills"].autoplay-active .pagination-item.active::before {
+  width: var(--pill-progress, 0%);
+  transition: none;
+}
+
+/* ===================================
+   AUTOPLAY TOGGLE BUTTON
+   =================================== */
+.autoplay-toggle {
+  width: 36px;
+  min-width: 36px;
+  max-width: 36px;
+  height: 36px;
+  min-height: 36px;
+  max-height: 36px;
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease;
+  flex-shrink: 0;
+  position: relative;
+  padding: 0;
+  margin: 0;
+  margin-left: 4px;
+  transform: translateZ(0);
+  contain: layout;
+  order: 999;
+}
+
+.autoplay-toggle::before {
+  content: attr(data-icon);
+  font-size: 14px;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Optical centering for play icon */
+.autoplay-toggle[data-icon="▶"]::before {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-46%, -48%);
+}
+
+.autoplay-toggle:hover {
+  background: rgba(0, 0, 0, 0.25);
+  transform: scale(1.05) translateZ(0);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.autoplay-toggle:active {
+  transform: scale(0.95) translateZ(0);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Play button background variants (kept for compatibility) */
+.autoplay-toggle[data-play-bg="light"] {
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.autoplay-toggle[data-play-bg="light"]::before {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+/* ===================================
+   AUTOPLAY CONTROLS (Legacy)
+   =================================== */
+.autoplay-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: none;
+  gap: 8px;
+  z-index: 15;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.autoplay-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.autoplay-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
+}
+
+.autoplay-progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.autoplay-progress-ring circle {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 2;
+}
+
+.autoplay-progress-ring .progress {
+  stroke: white;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+/* ===================================
+   EXPAND HINT
+   =================================== */
+.expand-hint {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.expand-hint::before {
+  content: "⤢";
+  font-size: 16px;
+}
+
+.gallery-main.zoomed .expand-hint {
+  display: none;
+}
+
+/* ===================================
+   IMAGE CAPTIONS
+   =================================== */
+.image-caption {
+  position: absolute;
+  bottom: 60px;
+  left: 20px;
+  right: 20px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+  padding: 40px 20px 20px;
+  border-radius: 0 0 12px 12px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 9;
+}
+
+.gallery-main[data-show-captions="true"]:hover .image-caption,
+.gallery-main[data-show-captions="always"] .image-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.image-caption-title,
+.caption-title {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.image-caption-description,
+.caption-description {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  line-height: 1.5;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ===================================
+   SWIPE INDICATOR
+   =================================== */
+.swipe-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.swipe-indicator.left {
+  left: 20px;
+}
+
+.swipe-indicator.right {
+  right: 20px;
+}
+
+.swipe-indicator.visible {
+  opacity: 1;
+}
+
+/* ===================================
+   VIDEO SUPPORT
+   =================================== */
+.video-play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  border: 3px solid white;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-play-overlay::after {
+  content: "▶";
+  font-size: 32px;
+  color: white;
+  margin-left: 4px;
+}
+
+/* ===================================
+   LIGHTBOX / MODAL
+   =================================== */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.lightbox.active {
+  display: flex;
+  opacity: 1;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 95%;
+  max-height: 95%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.lightbox.active .lightbox-content {
+  transform: scale(1);
+}
+
+.lightbox-content.zoomed {
+  cursor: grab;
+}
+
+.lightbox-content.zoomed:active {
+  cursor: grabbing;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  transform-origin: center center;
+  aspect-ratio: auto;
+}
+
+.lightbox .zoom-controls {
+  opacity: 1;
+  bottom: 100px;
+}
+
+.lightbox .zoom-level {
+  opacity: 0;
+}
+
+.lightbox-content.zoomed .zoom-level {
+  opacity: 1;
+}
+
+.lightbox-close {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10000;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+}
+
+.lightbox .gallery-nav-button {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.lightbox .gallery-nav-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.lightbox .gallery-counter {
+  bottom: 40px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.lightbox-thumbnails {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.lightbox-thumbnails::-webkit-scrollbar {
+  height: 6px;
+}
+
+.lightbox-thumbnails::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.lightbox-thumbnail {
+  width: 80px;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.lightbox-thumbnail:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.lightbox-thumbnail.active {
+  opacity: 1;
+  border-color: white;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.lightbox-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Lightbox pagination */
+.lightbox .gallery-pagination-container {
+  position: fixed;
+  bottom: 120px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 10001;
+}
+
+.lightbox .gallery-pagination {
+  background: rgba(50, 50, 50, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.lightbox .gallery-pagination[data-style="animated-pills"] .pagination-item {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.lightbox .gallery-pagination[data-style="animated-pills"] .pagination-item.active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.lightbox .gallery-pagination[data-style="animated-pills"] .pagination-item::before {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.lightbox .autoplay-toggle {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.lightbox .autoplay-toggle::before {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.lightbox .image-caption {
+  bottom: 140px;
+}
+
+/* ===================================
+   RESPONSIVE
+   =================================== */
+@media (max-width: 768px) {
+  body {
+    padding: 15px 8px;
+  }
+
+  .gallery-wrapper {
+    padding: 8px;
+    gap: 4px;
+    flex-direction: column;
+  }
+
+  .gallery-wrapper[data-thumbnail-position="left"],
+  .gallery-wrapper[data-thumbnail-position="right"] {
+    flex-direction: column;
+  }
+
+  .gallery-thumbnails {
+    flex-direction: row !important;
+    width: 100% !important;
+    padding: 8px 4px;
+    gap: 6px;
+  }
+
+  .gallery-wrapper[data-thumbnail-position="left"] .gallery-thumbnails,
+  .gallery-wrapper[data-thumbnail-position="right"] .gallery-thumbnails {
+    flex-direction: row !important;
+    width: 100% !important;
+  }
+
+  .gallery-thumbnail {
+    width: 60px;
+    max-width: 60px;
+    min-width: 60px;
+    height: 60px;
+    aspect-ratio: 1;
+  }
+
+  .gallery-main {
+    min-height: 400px;
+    width: 100%;
+    max-width: 100%;
+    height: 400px;
+  }
+
+  .gallery-main[data-image-size="medium"] {
+    max-width: 100%;
+    max-height: 60vh;
+    width: 100%;
+    height: 400px;
+    min-height: 400px;
+  }
+
+  .gallery-nav-button {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .gallery-nav-button.prev {
+    left: 6px;
+  }
+
+  .gallery-nav-button.next {
+    right: 6px;
+  }
+
+  .gallery-pagination-container {
+    padding: 8px 48px;
+  }
+
+  .expand-hint {
+    display: none;
+  }
+
+  .zoom-controls {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .zoom-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+
+  .image-caption {
+    bottom: 50px;
+    left: 10px;
+    right: 10px;
+    padding: 30px 15px 15px;
+  }
+
+  .image-caption-title {
+    font-size: 14px;
+  }
+
+  .image-caption-description {
+    font-size: 12px;
+  }
+
+  .swipe-indicator {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .lightbox .gallery-pagination-container {
+    bottom: 100px;
+  }
+
+  .lightbox-thumbnails {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .lightbox-thumbnail {
+    width: 60px;
+  }
+}
