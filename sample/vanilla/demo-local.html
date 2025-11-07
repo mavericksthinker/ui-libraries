@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery & Carousel - Working Demo</title>
+
+  <!-- Gallery Component CSS from CDN -->
+  <link rel="stylesheet" href="../../dist/gallery/css/gallery.css">
+
+  <!-- Carousel Component CSS from CDN -->
+  <link rel="stylesheet" href="../../dist/carousel/css/carousel.css">
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #ffffff;
+      color: #1d1d1f;
+      min-height: 100vh;
+      padding: 40px 20px;
+      margin: 0;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .page-header h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #1d1d1f;
+    }
+
+    .section-wrapper {
+      max-width: 1400px;
+      margin: 0 auto 80px auto;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      text-align: center;
+      color: #1d1d1f;
+    }
+
+    /* Gallery pagination at bottom */
+    .gallery-pagination-container {
+      margin-top: 24px;
+    }
+
+    /* Carousel slide height adjustments - flexible for any content */
+    .carousel .slide-container {
+      height: 100%;
+      min-height: 500px;
+      max-height: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .carousel .slide-media {
+      min-height: 400px;
+      max-height: 450px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel .slide-media img,
+    .carousel .slide-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    /* Allow content to grow if needed (for cards with more text) */
+    .carousel .slide-caption {
+      flex-shrink: 0;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1068px) {
+      .carousel .slide-media {
+        min-height: 350px;
+        max-height: 400px;
+      }
+
+      .carousel .slide-container {
+        min-height: 450px;
+      }
+    }
+
+    @media (max-width: 734px) {
+      .carousel .slide-media {
+        min-height: 300px;
+        max-height: 350px;
+      }
+
+      .carousel .slide-container {
+        min-height: 400px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <h1>Gallery & Carousel Components</h1>
+    <p>Working demo with all features</p>
+  </div>
+
+  <!-- GALLERY COMPONENT -->
+  <div class="section-wrapper">
+    <h2 class="section-title">Gallery Component</h2>
+
+    <div class="gallery-container">
+      <div class="gallery-wrapper" data-thumbnail-position="left" data-pagination-position="bottom">
+
+        <!-- Thumbnails Strip -->
+        <div class="gallery-thumbnails">
+          <div class="gallery-thumbnail active" data-index="0" tabindex="0">
+            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=150&h=150&fit=crop" alt="Mountain landscape">
+          </div>
+          <div class="gallery-thumbnail" data-index="1" tabindex="0">
+            <img src="https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=150&h=150&fit=crop" alt="Ocean waves">
+          </div>
+          <div class="gallery-thumbnail" data-index="2" tabindex="0">
+            <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=150&h=150&fit=crop" alt="Forest trail">
+          </div>
+          <div class="gallery-thumbnail" data-index="3" tabindex="0">
+            <img src="https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=150&h=150&fit=crop" alt="Desert dunes">
+          </div>
+        </div>
+
+        <!-- Main content area -->
+        <div class="gallery-main-content">
+          <!-- Main Display -->
+          <div class="gallery-main"
+               data-image-size="medium"
+               data-show-arrows="true"
+               data-show-counter="true"
+               data-enable-zoom="true"
+               data-zoom-mode="manual"
+               data-autoplay="true"
+               data-autoplay-delay="3000"
+               data-show-captions="hidden"
+               data-enable-swipe="true">
+
+            <!-- Navigation Arrows -->
+            <button class="gallery-nav-button prev" aria-label="Previous image">‹</button>
+            <button class="gallery-nav-button next" aria-label="Next image">›</button>
+
+            <!-- Image Counter -->
+            <div class="gallery-counter">
+              <span class="current">1</span> / <span class="total">4</span>
+            </div>
+
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+              <button class="zoom-btn zoom-out" aria-label="Zoom out">−</button>
+              <button class="zoom-btn zoom-in" aria-label="Zoom in">+</button>
+              <button class="zoom-btn zoom-reset" aria-label="Reset zoom">⟲</button>
+            </div>
+
+            <!-- Zoom Level Indicator -->
+            <div class="zoom-level">100%</div>
+
+            <!-- Hover Zoom Elements -->
+            <div class="hover-zoom-lens"></div>
+            <div class="hover-zoom-result">
+              <div class="hover-zoom-result-inner">
+                <img src="" alt="Zoomed view">
+              </div>
+            </div>
+
+            <!-- Expand Hint -->
+            <div class="expand-hint">Click to expand</div>
+
+            <!-- Swipe Indicators -->
+            <div class="swipe-indicator left">‹</div>
+            <div class="swipe-indicator right">›</div>
+
+            <!-- Video Play Overlay -->
+            <div class="video-play-overlay"></div>
+
+            <!-- Main Images -->
+            <img class="gallery-main-image active"
+                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=800&fit=crop"
+                 alt="Mountain landscape"
+                 data-caption-title="Mountain Peak"
+                 data-caption-desc="Majestic mountain landscape">
+            <img class="gallery-main-image"
+                 src="https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=1200&h=800&fit=crop"
+                 alt="Ocean waves"
+                 data-caption-title="Ocean Waves"
+                 data-caption-desc="Peaceful ocean scenery">
+            <img class="gallery-main-image"
+                 src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&h=800&fit=crop"
+                 alt="Forest trail"
+                 data-caption-title="Forest Trail"
+                 data-caption-desc="Lush green forest path">
+            <img class="gallery-main-image"
+                 src="https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=1200&h=800&fit=crop"
+                 alt="Desert dunes"
+                 data-caption-title="Desert Dunes"
+                 data-caption-desc="Golden sand dunes">
+
+            <!-- Image Caption -->
+            <div class="image-caption">
+              <div class="caption-title"></div>
+              <div class="caption-description"></div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="gallery-pagination-container">
+            <div
+              class="gallery-pagination"
+              data-style="animated-pills"
+              role="progressbar"
+              aria-label="Image gallery progress"
+            ></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CAROUSEL COMPONENT -->
+  <div class="section-wrapper">
+    <h2 class="section-title">Scroll-Based Carousel</h2>
+
+    <section class="carousel"
+             data-variant="scroll-based"
+             data-slide-width="33%"
+             data-autoplay="false"
+             data-autoplay-delay="5000">
+
+      <div class="carousel-viewport">
+        <ul class="carousel-track">
+
+          <!-- Slide 1 -->
+          <li class="carousel-slide" data-slide-index="0">
+            <article class="slide-container">
+              <header class="slide-caption">
+                <h2 class="caption-title">Northern Lights</h2>
+                <p class="caption-subtitle">Aurora borealis dancing across the Arctic sky</p>
+              </header>
+              <figure class="slide-media">
+                <img src="https://images.unsplash.com/photo-1483347756197-71ef80e95f73?w=800&h=600&fit=crop" alt="Northern lights">
+              </figure>
+            </article>
+          </li>
+
+          <!-- Slide 2 -->
+          <li class="carousel-slide" data-slide-index="1">
+            <article class="slide-container">
+              <header class="slide-caption">
+                <h2 class="caption-title">City Skyline</h2>
+                <p class="caption-subtitle">Urban architecture at golden hour</p>
+              </header>
+              <figure class="slide-media">
+                <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&h=600&fit=crop" alt="City skyline">
+              </figure>
+            </article>
+          </li>
+
+          <!-- Slide 3 -->
+          <li class="carousel-slide" data-slide-index="2">
+            <article class="slide-container">
+              <header class="slide-caption">
+                <h2 class="caption-title">Mountain Range</h2>
+                <p class="caption-subtitle">Majestic peaks under clear blue skies</p>
+              </header>
+              <figure class="slide-media">
+                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&h=600&fit=crop" alt="Mountain range">
+              </figure>
+            </article>
+          </li>
+
+          <!-- Slide 4 -->
+          <li class="carousel-slide" data-slide-index="3">
+            <article class="slide-container">
+              <header class="slide-caption">
+                <h2 class="caption-title">Coastal Beach</h2>
+                <p class="caption-subtitle">Pristine shores and crystal waters</p>
+              </header>
+              <figure class="slide-media">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop" alt="Coastal beach">
+              </figure>
+            </article>
+          </li>
+
+          <!-- Slide 5 -->
+          <li class="carousel-slide" data-slide-index="4">
+            <article class="slide-container">
+              <header class="slide-caption">
+                <h2 class="caption-title">Desert Sunset</h2>
+                <p class="caption-subtitle">Golden dunes in fading light</p>
+              </header>
+              <figure class="slide-media">
+                <img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&h=600&fit=crop" alt="Desert sunset">
+              </figure>
+            </article>
+          </li>
+
+          <!-- Slide 6 -->
+          <li class="carousel-slide" data-slide-index="5">
+            <article class="slide-container">
+              <header class="slide-caption">
+                <h2 class="caption-title">Starry Night</h2>
+                <p class="caption-subtitle">Milky Way over mountain peaks</p>
+              </header>
+              <figure class="slide-media">
+                <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&h=600&fit=crop" alt="Starry night">
+              </figure>
+            </article>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- Navigation Controls -->
+      <nav class="carousel-nav">
+        <div class="nav-dots"></div>
+        <button class="play-pause-btn">
+          <svg class="play-icon" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M8 5v14l11-7z" fill="currentColor"/>
+          </svg>
+          <svg class="pause-icon" viewBox="0 0 24 24" width="24" height="24" style="display: none;">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" fill="currentColor"/>
+          </svg>
+        </button>
+      </nav>
+
+      <!-- Arrow Controls -->
+      <div class="carousel-arrows">
+        <button class="arrow-btn arrow-prev">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path d="M15.5 19l-7-7 7-7" stroke="currentColor" stroke-width="2" fill="none"/>
+          </svg>
+        </button>
+        <button class="arrow-btn arrow-next">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path d="M8.5 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none"/>
+          </svg>
+        </button>
+      </div>
+
+    </section>
+  </div>
+
+  <!-- Lightbox / Modal (Required for Gallery full-screen zoom) -->
+  <div class="lightbox">
+    <button class="lightbox-close" aria-label="Close lightbox">×</button>
+
+    <div class="lightbox-content" data-show-counter="true" data-show-captions="hover">
+      <button class="gallery-nav-button prev" aria-label="Previous image">‹</button>
+      <button class="gallery-nav-button next" aria-label="Next image">›</button>
+
+      <div class="gallery-counter">
+        <span class="current">1</span> / <span class="total">4</span>
+      </div>
+
+      <div class="zoom-controls">
+        <button class="zoom-btn zoom-out" aria-label="Zoom out">−</button>
+        <button class="zoom-btn zoom-in" aria-label="Zoom in">+</button>
+        <button class="zoom-btn zoom-reset" aria-label="Reset zoom">⟲</button>
+      </div>
+
+      <div class="zoom-level">100%</div>
+      <div class="video-play-overlay"></div>
+      <div class="swipe-indicator left">‹</div>
+      <div class="swipe-indicator right">›</div>
+
+      <img
+        class="lightbox-image"
+        src=""
+        alt="Lightbox image"
+      >
+
+      <!-- Image Caption -->
+      <div class="image-caption">
+        <div class="image-caption-title">Image Title</div>
+        <div class="image-caption-description">Image description goes here</div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="gallery-pagination-container">
+      <div
+        class="gallery-pagination"
+        data-style="animated-pills"
+        role="progressbar"
+        aria-label="Image gallery progress"
+      ></div>
+    </div>
+
+    <div class="lightbox-thumbnails"></div>
+  </div>
+
+
+  <!-- Gallery Component JS (Local) -->
+  <script src="../../dist/gallery/js/gallery.js"></script>
+
+  <!-- Scroll-Based Carousel JS (Local) -->
+  <script src="../../dist/carousel/js/carousel.js"></script>
+
+</body>
+</html>
