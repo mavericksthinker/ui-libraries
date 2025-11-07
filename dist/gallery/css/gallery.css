@@ -234,9 +234,9 @@
 .gallery-main[data-image-size="large"] {
   max-width: min(700px, 90vw);
   max-height: min(600px, 70vh);
-  width: 700px;
-  height: 696px;
-  min-height: 696px;
+  width: 560px;
+  height: 674px;
+  min-height: 674px;
 }
 
 /* Cursor changes based on zoom mode */
