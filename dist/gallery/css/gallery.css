@@ -1098,10 +1098,6 @@
    RESPONSIVE
    =================================== */
 @media (max-width: 768px) {
-  body {
-    padding: 15px 8px;
-  }
-
   .gallery-wrapper {
     padding: 8px;
     gap: 4px;
