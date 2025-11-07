@@ -884,6 +884,11 @@ body {
   margin-left: 4px;
 }
 
+ /* Gallery pagination at bottom */
+.gallery-pagination-container {
+  margin-top: 24px;
+}
+
 /* ===================================
    LIGHTBOX / MODAL
    =================================== */
