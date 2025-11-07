@@ -235,8 +235,8 @@
   max-width: min(700px, 90vw);
   max-height: min(600px, 70vh);
   width: 700px;
-  height: 632px;
-  min-height: 632px;
+  height: 696px;
+  min-height: 696px;
 }
 
 /* Cursor changes based on zoom mode */
