@@ -123,18 +123,23 @@
       // Check if this is a pill button (always expanded, no bounce)
       this.isPillButton = this.container.classList.contains('fab-pill');
 
+      // If no data-hide-on attribute, show button immediately
       if (this.hideSectionIds.length === 0) {
-        this.logError('No sections specified in data-hide-on attribute');
+        console.log('[FAB] No data-hide-on specified - button will always be visible');
+        this.showImmediately();
         return;
       }
 
       this.findSections();
 
+      // If no valid sections found, show button immediately
       if (this.observedSections.length === 0) {
-        this.logError('None of the specified sections exist in the DOM');
+        console.log('[FAB] No valid sections found - button will always be visible');
+        this.showImmediately();
         return;
       }
 
+      // Valid sections exist - use hide/show logic
       this.setupObserver();
 
       // Setup scroll bounce if enabled (disabled by default)
@@ -152,6 +157,22 @@
 
       // Set initial state
       this.setState('hidden');
+    }
+
+    /**
+     * Show button immediately (for always-visible mode)
+     */
+    showImmediately() {
+      if (this.config.enableKeyboard) {
+        this.setupKeyboard();
+      }
+
+      if (this.config.enableReducedMotion) {
+        this.setupReducedMotion();
+      }
+
+      // Show immediately with bounce animation
+      this.setState('icon-visible');
     }
 
     /**

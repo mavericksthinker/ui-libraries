@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAB Test - Text Only</title>
+
+  <!-- FAB CSS -->
+  <link rel="stylesheet" href="css/fab.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f5f5f7;
+    }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #1d1d1f;
+    }
+
+    #hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    #content {
+      background: white;
+    }
+
+    #footer {
+      background: #000;
+      color: white;
+    }
+
+    .debug-info {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: monospace;
+      z-index: 10001;
+      max-width: 300px;
+    }
+
+    .debug-info h4 {
+      margin-bottom: 10px;
+      color: #4ade80;
+    }
+
+    .debug-info p {
+      margin: 5px 0;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .success { color: #4ade80; }
+    .error { color: #f87171; }
+  </style>
+</head>
+<body>
+
+  <!-- Debug Info -->
+  <div class="debug-info">
+    <h4>FAB Debug Info</h4>
+    <p>FAB Element: <span id="debug-fab"></span></p>
+    <p>FAB Instance: <span id="debug-instance"></span></p>
+    <p>Hero Section: <span id="debug-hero"></span></p>
+    <p>Footer Section: <span id="debug-footer"></span></p>
+    <p>Current State: <span id="debug-state"></span></p>
+    <hr style="margin: 10px 0; border-color: #333;">
+    <p style="font-size: 10px; opacity: 0.7;">
+      Instructions:<br>
+      1. Scroll down to see FAB appear<br>
+      2. It should bounce in with text<br>
+      3. Scroll to footer - it disappears<br>
+      4. Scroll back up - it appears again
+    </p>
+  </div>
+
+  <!-- Sections -->
+  <section id="hero">
+    <div>
+      <h1>Hero Section</h1>
+      <p style="font-size: 1rem; margin-top: 1rem;">FAB is hidden here</p>
+      <p style="font-size: 1rem;">⬇️ Scroll down ⬇️</p>
+    </div>
+  </section>
+
+  <section id="content">
+    <div>
+      <h2>Content Section</h2>
+      <p style="font-size: 1rem; margin-top: 1rem;">FAB should appear here!</p>
+      <p style="font-size: 1rem;">Look at bottom-center 👀</p>
+    </div>
+  </section>
+
+  <section id="footer">
+    <div>
+      <h2>Footer Section</h2>
+      <p style="font-size: 1rem; margin-top: 1rem;">FAB is hidden again</p>
+    </div>
+  </section>
+
+  <!-- FAB Component - TEXT ONLY -->
+  <div class="fab-container"
+       data-hide-on="hero,footer"
+       data-position="bottom-center"
+       data-theme="dark">
+    <div class="fab">
+      <div class="fab__halo"></div>
+      <div class="fab__content">
+        <button class="fab__button"
+                aria-label="Learn more"
+                onclick="alert('FAB Clicked! ✅\n\nThe button is working correctly.')">
+          <span class="fab__text">Learn More</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB JavaScript -->
+  <script src="js/fab.js"></script>
+
+  <!-- Debug Script -->
+  <script>
+    function updateDebugInfo() {
+      const fabElement = document.querySelector('.fab-container');
+      const fabInstance = fabElement?.__fabInstance;
+      const heroSection = document.getElementById('hero');
+      const footerSection = document.getElementById('footer');
+
+      document.getElementById('debug-fab').innerHTML =
+        fabElement ? '<span class="success">✅ Found</span>' : '<span class="error">❌ Not Found</span>';
+
+      document.getElementById('debug-instance').innerHTML =
+        fabInstance ? '<span class="success">✅ Initialized</span>' : '<span class="error">❌ Not Initialized</span>';
+
+      document.getElementById('debug-hero').innerHTML =
+        heroSection ? '<span class="success">✅ Found</span>' : '<span class="error">❌ Not Found</span>';
+
+      document.getElementById('debug-footer').innerHTML =
+        footerSection ? '<span class="success">✅ Found</span>' : '<span class="error">❌ Not Found</span>';
+
+      const currentState = fabElement?.getAttribute('data-state') || 'unknown';
+      document.getElementById('debug-state').innerHTML =
+        `<span class="success">${currentState}</span>`;
+
+      console.log('FAB Debug Info:', {
+        fabElement: !!fabElement,
+        fabInstance: !!fabInstance,
+        heroSection: !!heroSection,
+        footerSection: !!footerSection,
+        currentState: currentState
+      });
+    }
+
+    // Update debug info on load
+    window.addEventListener('load', () => {
+      setTimeout(updateDebugInfo, 500);
+      console.log('✅ Test page loaded');
+      console.log('📍 Scroll down to see FAB appear');
+    });
+
+    // Update debug info on state changes
+    const observer = new MutationObserver(() => {
+      updateDebugInfo();
+    });
+
+    setTimeout(() => {
+      const fabElement = document.querySelector('.fab-container');
+      if (fabElement) {
+        observer.observe(fabElement, {
+          attributes: true,
+          attributeFilter: ['data-state']
+        });
+      }
+    }, 1000);
+  </script>
+
+</body>
+</html>

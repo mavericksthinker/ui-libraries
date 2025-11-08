@@ -1,0 +1,44 @@
+<!--
+  WEBFLOW INLINE FAB - ALL-IN-ONE
+  Copy this entire block into a Webflow Embed element
+-->
+
+<!-- FAB Styles (Inline) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/YOUR_GITHUB_USERNAME/ui-libraries@main/dist/fab/css/fab.css">
+
+<!-- FAB HTML -->
+<div class="fab-container"
+     data-hide-on="hero,footer"
+     data-position="bottom-center"
+     data-theme="dark">
+  <div class="fab">
+    <div class="fab__halo"></div>
+    <div class="fab__content">
+      <button class="fab__button" aria-label="Learn more">
+        <span class="fab__text">Learn More</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB Script (Inline) -->
+<script src="https://cdn.jsdelivr.net/gh/YOUR_GITHUB_USERNAME/ui-libraries@main/dist/fab/js/fab.js"></script>
+
+<!-- Debug Script -->
+<script>
+window.addEventListener('load', () => {
+  const fab = document.querySelector('.fab-container');
+  if (fab) {
+    console.log('✅ FAB element found');
+    console.log('FAB instance:', fab.__fabInstance);
+
+    // Check sections
+    const hero = document.getElementById('hero');
+    const footer = document.getElementById('footer');
+    console.log('Hero section:', hero ? '✅ Found' : '❌ Not found');
+    console.log('Footer section:', footer ? '✅ Found' : '❌ Not found');
+  } else {
+    console.error('❌ FAB element not found');
+  }
+});
+</script>
