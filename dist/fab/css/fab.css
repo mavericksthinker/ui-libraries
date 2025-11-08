@@ -455,7 +455,7 @@
 .fab-container[data-state="fully-visible"] .fab__button,
 .fab-container[data-state="fully-visible"] .fab__link {
   gap: 0.5rem;
-  padding: 0 1.25rem 0 1rem;
+  padding: 16px 32px;
 }
 
 /* Right alignment: Icon on right, text on left */
@@ -466,7 +466,7 @@
 
 .fab-container[data-align="right"][data-state="fully-visible"] .fab__button,
 .fab-container[data-align="right"][data-state="fully-visible"] .fab__link {
-  padding: 0 1rem 0 1.25rem;
+  padding: 16px 32px;
 }
 
 /* Left alignment: Icon on left, text on right */
@@ -477,7 +477,7 @@
 
 .fab-container[data-align="left"][data-state="fully-visible"] .fab__button,
 .fab-container[data-align="left"][data-state="fully-visible"] .fab__link {
-  padding: 0 1.25rem 0 1rem;
+  padding: 16px 32px;
 }
 
 /* Center alignment (default) */
@@ -485,14 +485,14 @@
 .fab-container[data-align="center"][data-state="fully-visible"] .fab__link,
 .fab-container:not([data-align])[data-state="fully-visible"] .fab__button,
 .fab-container:not([data-align])[data-state="fully-visible"] .fab__link {
-  padding: 0 1.25rem;
+  padding: 16px 32px;
 }
 
 /* ==================== TEXT-ONLY VARIANT ==================== */
 /* Text-only buttons: No icon, just text that appears */
 .fab__button:not(:has(.fab__icon)),
 .fab__link:not(:has(.fab__icon)) {
-  padding: 0 1.5rem;
+  padding: 16px 32px;
 }
 
 .fab-container[data-state="icon-visible"] .fab__button:not(:has(.fab__icon)) .fab__text,
@@ -579,23 +579,23 @@
   /* Mobile-specific padding - only when expanded */
   .fab-container[data-state="fully-visible"] .fab__button,
   .fab-container[data-state="fully-visible"] .fab__link {
-    padding: 0 1rem 0 0.875rem;
+    padding: 12px 24px;
     gap: 0.4rem;
   }
 
   .fab-container[data-align="right"][data-state="fully-visible"] .fab__button,
   .fab-container[data-align="right"][data-state="fully-visible"] .fab__link {
-    padding: 0 0.875rem 0 1rem;
+    padding: 12px 24px;
   }
 
   .fab-container[data-align="left"][data-state="fully-visible"] .fab__button,
   .fab-container[data-align="left"][data-state="fully-visible"] .fab__link {
-    padding: 0 1rem 0 0.875rem;
+    padding: 12px 24px;
   }
 
   .fab-container[data-state="fully-visible"] .fab__button:not(:has(.fab__icon)),
   .fab-container[data-state="fully-visible"] .fab__link:not(:has(.fab__icon)) {
-    padding: 0 1.25rem;
+    padding: 12px 24px;
   }
 
   /* Mobile text transitions - slightly faster than desktop */
@@ -640,7 +640,7 @@
 
   .fab-container[data-state="fully-visible"] .fab__button,
   .fab-container[data-state="fully-visible"] .fab__link {
-    padding: 0 0.875rem;
+    padding: 10px 20px;
     gap: 0.4rem;
   }
 }
