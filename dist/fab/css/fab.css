@@ -1,0 +1,703 @@
+/**
+ * =====================================================
+ * FLOATING ACTION BUTTON - STYLES
+ * =====================================================
+ * Apple-inspired expandable button with bounce physics
+ * Matches iPhone 17 Pro "All Access Pass" animation
+ *
+ * @author Claude
+ * @version 2.0.0
+ */
+
+/* ==================== ROOT VARIABLES ==================== */
+:root {
+  /* Positioning */
+  --fab-offset: 2rem;
+  --fab-z-index: 9999;
+
+  /* Sizes */
+  --fab-collapsed-size: 44px;
+  --fab-expanded-height: 44px;
+  --fab-expanded-min-width: 160px;
+  --fab-border-radius: 22px;
+
+  /* Dark Theme Colors (Default) */
+  --fab-bg-color: rgba(0, 0, 0, 0.85);
+  --fab-text-color: #ffffff;
+  --fab-halo-color: 59, 130, 246; /* RGB format */
+  --fab-hover-bg: rgba(0, 0, 0, 0.95);
+  --fab-focus-ring: rgba(59, 130, 246, 0.6);
+
+  /* Animation Durations */
+  --fab-appear-duration: 0.5s;
+  --fab-expand-duration: 0.4s;
+  --fab-bounce-duration: 0.3s;
+
+  /* Easing Functions */
+  --fab-spring-easing: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --fab-smooth-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --fab-bounce-easing: cubic-bezier(0.68, -0.25, 0.265, 1.25);
+  --fab-text-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Halo Effect */
+  --fab-halo-opacity: 0.25;
+  --fab-halo-blur: 20px;
+  --fab-halo-scale: 1.8;
+
+  /* Shadows */
+  --fab-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+  --fab-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.2),
+                      0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Light Theme */
+.fab-container[data-theme="light"] {
+  --fab-bg-color: rgba(255, 255, 255, 0.95);
+  --fab-text-color: #1d1d1f;
+  --fab-hover-bg: rgba(255, 255, 255, 1);
+  --fab-shadow: 0 4px 16px rgba(0, 0, 0, 0.08),
+                0 2px 8px rgba(0, 0, 0, 0.04);
+  --fab-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12),
+                      0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ==================== CONTAINER ==================== */
+.fab-container {
+  position: fixed;
+  z-index: var(--fab-z-index);
+  pointer-events: none;
+}
+
+/* Position Variants */
+/* Bottom Center (Default) */
+.fab-container:not([data-position]),
+.fab-container[data-position="bottom-center"] {
+  bottom: var(--fab-offset);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.fab-container[data-position="bottom-right"] {
+  bottom: var(--fab-offset);
+  right: var(--fab-offset);
+}
+
+.fab-container[data-position="bottom-left"] {
+  bottom: var(--fab-offset);
+  left: var(--fab-offset);
+}
+
+.fab-container[data-position="top-center"] {
+  top: var(--fab-offset);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.fab-container[data-position="top-right"] {
+  top: var(--fab-offset);
+  right: var(--fab-offset);
+}
+
+.fab-container[data-position="top-left"] {
+  top: var(--fab-offset);
+  left: var(--fab-offset);
+}
+
+/* ==================== FAB ELEMENT (Main Wrapper) ==================== */
+.fab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+
+  /* Collapsed state */
+  width: var(--fab-collapsed-size);
+  height: var(--fab-collapsed-size);
+  min-width: var(--fab-collapsed-size);
+
+  /* Initial hidden state */
+  opacity: 0;
+  transform: translateY(24px) scale(0.85);
+
+  /* Default expansion from center */
+  transform-origin: center center;
+
+  /* Performance */
+  will-change: transform, opacity, width;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  perspective: 1000px;
+}
+
+/* Expansion Direction via Transform Origin */
+/* Right alignment: icon on right, expand LEFT */
+.fab-container[data-align="right"] .fab {
+  transform-origin: right center;
+}
+
+/* Left alignment: icon on left, expand RIGHT */
+.fab-container[data-align="left"] .fab {
+  transform-origin: left center;
+}
+
+/* Center/default: expand from CENTER */
+.fab-container[data-align="center"] .fab,
+.fab-container:not([data-align]) .fab {
+  transform-origin: center center;
+}
+
+/* ==================== VISIBILITY STATES (SIMPLIFIED 3-STAGE) ==================== */
+
+/* Stage 1: Hidden - Entire button invisible */
+.fab-container[data-state="hidden"] .fab {
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Stage 2: Icon Visible - Bounce in, show icon/circle + halo */
+.fab-container[data-state="icon-visible"] .fab {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  width: var(--fab-collapsed-size);
+  min-width: var(--fab-collapsed-size);
+  animation: fabBounceIn var(--fab-appear-duration) var(--fab-spring-easing);
+}
+
+/* Stage 3: Fully Visible - Text appears, button expands naturally */
+.fab-container[data-state="fully-visible"] .fab {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  width: auto;
+  min-width: auto;
+  transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Scroll bounce effect */
+.fab-container[data-bouncing="true"] .fab {
+  animation: fabScrollBounce var(--fab-bounce-duration) cubic-bezier(0.68, -0.25, 0.265, 1.25);
+}
+
+/* ==================== KEYFRAME ANIMATIONS ==================== */
+
+@keyframes fabBounceIn {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1.03);
+  }
+  75% {
+    transform: translateY(2px) scale(0.99);
+  }
+  90% {
+    transform: translateY(-1px) scale(1.005);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fabBounceOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  30% {
+    opacity: 0.7;
+    transform: translateY(4px) scale(0.97);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.85);
+  }
+}
+
+@keyframes fabScrollBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-5px) scale(1.015);
+  }
+  50% {
+    transform: translateY(1px) scale(0.995);
+  }
+  75% {
+    transform: translateY(-1px) scale(1.005);
+  }
+}
+
+/* ==================== HALO EFFECT (Background) ==================== */
+.fab__halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* Always circular */
+  width: calc(var(--fab-collapsed-size) * var(--fab-halo-scale));
+  height: calc(var(--fab-collapsed-size) * var(--fab-halo-scale));
+  border-radius: 50%;
+
+  /* Radiant glow effect */
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--fab-halo-color), var(--fab-halo-opacity)) 0%,
+    rgba(var(--fab-halo-color), calc(var(--fab-halo-opacity) * 0.5)) 40%,
+    rgba(var(--fab-halo-color), 0) 70%
+  );
+  filter: blur(var(--fab-halo-blur));
+
+  /* Initial state */
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+
+  /* Performance */
+  will-change: transform, opacity;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Halo animations for 3-stage states */
+.fab-container[data-state="hidden"] .fab__halo {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+
+.fab-container[data-state="icon-visible"] .fab__halo,
+.fab-container[data-state="fully-visible"] .fab__halo {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  animation: haloAppear var(--fab-appear-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Pulse effect when bouncing */
+.fab-container[data-bouncing="true"] .fab__halo {
+  animation: haloPulse var(--fab-bounce-duration) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes haloAppear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes haloPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+/* ==================== CONTENT WRAPPER ==================== */
+.fab__content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+
+  background: var(--fab-bg-color);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--fab-border-radius);
+  box-shadow: var(--fab-shadow);
+
+  /* Transitions */
+  transition:
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+  overflow: hidden;
+}
+
+/* Hover States */
+.fab__content:hover {
+  background: var(--fab-hover-bg);
+  box-shadow: var(--fab-shadow-hover);
+}
+
+.fab__content:active {
+  transform: scale(0.97);
+}
+
+/* ==================== BUTTON ELEMENT ==================== */
+.fab__button,
+.fab__link {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  color: var(--fab-text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Focus States */
+.fab__button:focus-visible,
+.fab__link:focus-visible {
+  outline: 2px solid var(--fab-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--fab-border-radius);
+}
+
+/* ==================== ICON ==================== */
+.fab__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 20px;
+  height: 20px;
+
+  /* Always relative - use order to control visual centering */
+  position: relative;
+
+  /* Smooth transitions */
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fab__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Icon animation on hover (only when fully expanded) */
+.fab-container[data-state="fully-visible"] .fab__button:hover .fab__icon,
+.fab-container[data-state="fully-visible"] .fab__link:hover .fab__icon {
+  transform: scale(1.08);
+}
+
+/* ==================== TEXT ==================== */
+.fab__text {
+  /* Hidden by default */
+  opacity: 0;
+  width: 0;
+  max-width: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Stage 2 (icon-visible): Text still hidden */
+.fab-container[data-state="icon-visible"] .fab__text {
+  opacity: 0;
+  width: 0;
+  max-width: 0;
+}
+
+/* Stage 3 (fully-visible): Text appears and expands button */
+.fab-container[data-state="fully-visible"] .fab__text {
+  opacity: 1;
+  width: auto;
+  max-width: 15ch;
+  transition:
+    opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    max-width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ==================== LAYOUT & ALIGNMENT (SIMPLIFIED) ==================== */
+
+/* Collapsed state: No padding, icon centered */
+.fab__button,
+.fab__link {
+  flex-direction: row;
+  gap: 0;
+  padding: 0;
+  justify-content: center;
+  transition: gap 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              padding 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Expanded state: Add padding for text */
+.fab-container[data-state="fully-visible"] .fab__button,
+.fab-container[data-state="fully-visible"] .fab__link {
+  gap: 0.5rem;
+  padding: 0 1.25rem 0 1rem;
+}
+
+/* Right alignment: Icon on right, text on left */
+.fab-container[data-align="right"] .fab__button,
+.fab-container[data-align="right"] .fab__link {
+  flex-direction: row-reverse;
+}
+
+.fab-container[data-align="right"][data-state="fully-visible"] .fab__button,
+.fab-container[data-align="right"][data-state="fully-visible"] .fab__link {
+  padding: 0 1rem 0 1.25rem;
+}
+
+/* Left alignment: Icon on left, text on right */
+.fab-container[data-align="left"] .fab__button,
+.fab-container[data-align="left"] .fab__link {
+  flex-direction: row;
+}
+
+.fab-container[data-align="left"][data-state="fully-visible"] .fab__button,
+.fab-container[data-align="left"][data-state="fully-visible"] .fab__link {
+  padding: 0 1.25rem 0 1rem;
+}
+
+/* Center alignment (default) */
+.fab-container[data-align="center"][data-state="fully-visible"] .fab__button,
+.fab-container[data-align="center"][data-state="fully-visible"] .fab__link,
+.fab-container:not([data-align])[data-state="fully-visible"] .fab__button,
+.fab-container:not([data-align])[data-state="fully-visible"] .fab__link {
+  padding: 0 1.25rem;
+}
+
+/* ==================== TEXT-ONLY VARIANT ==================== */
+/* Text-only buttons: No icon, just text that appears */
+.fab__button:not(:has(.fab__icon)),
+.fab__link:not(:has(.fab__icon)) {
+  padding: 0 1.5rem;
+}
+
+.fab-container[data-state="icon-visible"] .fab__button:not(:has(.fab__icon)) .fab__text,
+.fab-container[data-state="icon-visible"] .fab__link:not(:has(.fab__icon)) .fab__text {
+  opacity: 0;
+  width: 0;
+}
+
+.fab-container[data-state="fully-visible"] .fab__button:not(:has(.fab__icon)) .fab__text,
+.fab-container[data-state="fully-visible"] .fab__link:not(:has(.fab__icon)) .fab__text {
+  opacity: 1;
+  width: auto;
+}
+
+/* ==================== PAGINATION VARIANT ==================== */
+.fab__pagination {
+  gap: 0.75rem;
+  padding: 0 1rem;
+}
+
+.fab__page-btn {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.fab__page-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.fab__page-btn:focus-visible {
+  outline: 2px solid var(--fab-focus-ring);
+  outline-offset: 1px;
+}
+
+.fab__page-number {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--fab-text-color);
+  min-width: 40px;
+  text-align: center;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  :root {
+    --fab-offset: 1.5rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  :root {
+    --fab-offset: 1.25rem;
+    --fab-collapsed-size: 40px;
+    --fab-expanded-min-width: 120px;
+    --fab-border-radius: 20px;
+    /* Faster, smoother animations on mobile */
+    --fab-appear-duration: 0.4s;
+    --fab-expand-duration: 0.3s;
+    --fab-bounce-duration: 0.2s;
+  }
+
+  .fab__button,
+  .fab__link {
+    font-size: 0.875rem;
+  }
+
+  .fab__icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Mobile-specific padding - only when expanded */
+  .fab-container[data-state="fully-visible"] .fab__button,
+  .fab-container[data-state="fully-visible"] .fab__link {
+    padding: 0 1rem 0 0.875rem;
+    gap: 0.4rem;
+  }
+
+  .fab-container[data-align="right"][data-state="fully-visible"] .fab__button,
+  .fab-container[data-align="right"][data-state="fully-visible"] .fab__link {
+    padding: 0 0.875rem 0 1rem;
+  }
+
+  .fab-container[data-align="left"][data-state="fully-visible"] .fab__button,
+  .fab-container[data-align="left"][data-state="fully-visible"] .fab__link {
+    padding: 0 1rem 0 0.875rem;
+  }
+
+  .fab-container[data-state="fully-visible"] .fab__button:not(:has(.fab__icon)),
+  .fab-container[data-state="fully-visible"] .fab__link:not(:has(.fab__icon)) {
+    padding: 0 1.25rem;
+  }
+
+  /* Mobile text transitions - slightly faster than desktop */
+  .fab-container[data-state="fully-visible"] .fab__text {
+    transition:
+      opacity 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      max-width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* GPU acceleration for smoother mobile */
+  .fab,
+  .fab__halo,
+  .fab__content {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  :root {
+    --fab-offset: 1rem;
+    --fab-collapsed-size: 38px;
+    --fab-expanded-min-width: 100px;
+    --fab-border-radius: 19px;
+  }
+
+  .fab__button,
+  .fab__link {
+    font-size: 0.8125rem;
+  }
+
+  .fab__icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .fab__text {
+    max-width: 12ch;
+  }
+
+  .fab-container[data-state="fully-visible"] .fab__button,
+  .fab-container[data-state="fully-visible"] .fab__link {
+    padding: 0 0.875rem;
+    gap: 0.4rem;
+  }
+}
+
+/* ==================== REDUCED MOTION ==================== */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --fab-appear-duration: 0.2s;
+    --fab-expand-duration: 0.2s;
+    --fab-bounce-duration: 0.1s;
+  }
+
+  /* Disable bounce animations */
+  .fab-container[data-state="icon-visible"] .fab,
+  .fab-container[data-bouncing="true"] .fab {
+    animation: none !important;
+  }
+
+  .fab-container[data-state="icon-visible"] .fab,
+  .fab-container[data-state="fully-visible"] .fab {
+    opacity: 1;
+    transform: none;
+  }
+
+  .fab-container[data-state="hidden"] .fab {
+    opacity: 0;
+    transform: none;
+  }
+
+  .fab__halo {
+    animation: none !important;
+  }
+}
+
+/* ==================== DARK MODE SUPPORT ==================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fab-bg-color: #1f1f1f;
+    --fab-hover-bg: #2a2a2a;
+  }
+}
+
+/* ==================== HIGH CONTRAST MODE ==================== */
+@media (prefers-contrast: high) {
+  .fab__content {
+    border: 2px solid var(--fab-text-color);
+  }
+
+  .fab__button:focus-visible,
+  .fab__link:focus-visible {
+    outline-width: 3px;
+  }
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  .fab-container {
+    display: none !important;
+  }
+}
