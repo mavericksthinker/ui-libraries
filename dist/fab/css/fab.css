@@ -165,6 +165,7 @@
   width: var(--fab-collapsed-size);
   min-width: var(--fab-collapsed-size);
   animation: fabBounceIn var(--fab-appear-duration) var(--fab-spring-easing);
+  transition: none; /* Disable transition during bounce */
 }
 
 /* Stage 3: Fully Visible - Text appears, button expands naturally */
@@ -173,7 +174,10 @@
   transform: translateY(0) scale(1);
   width: auto;
   min-width: auto;
-  transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  max-width: none;
+  transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              min-width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              max-width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Scroll bounce effect */
@@ -564,6 +568,18 @@
     --fab-appear-duration: 0.4s;
     --fab-expand-duration: 0.3s;
     --fab-bounce-duration: 0.2s;
+  }
+
+  /* Full-width variant on mobile */
+  .fab-container[data-mobile="full-width"][data-state="fully-visible"] .fab {
+    width: calc(100vw - 2 * var(--fab-offset)) !important;
+    max-width: calc(100vw - 2 * var(--fab-offset)) !important;
+  }
+
+  .fab-container[data-mobile="full-width"] {
+    left: var(--fab-offset);
+    right: var(--fab-offset);
+    transform: none;
   }
 
   .fab__button,
